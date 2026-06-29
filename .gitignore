@@ -1,0 +1,74 @@
+# ─── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+*.whl
+
+# ─── Virtual Environments ─────────────────────────────────────────────────────
+.venv/
+venv/
+ENV/
+env/
+
+# ─── IDE / Editors ────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ─── OS Files ─────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ─── Database ─────────────────────────────────────────────────────────────────
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# ─── Environment Variables ────────────────────────────────────────────────────
+.env
+.env.local
+.env.production
+!.env.example
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+logs/
+*.log
+
+# ─── Testing ─────────────────────────────────────────────────────────────────
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+
+# ─── mypy / type checkers ────────────────────────────────────────────────────
+.mypy_cache/
+.pytype/
+.pyre/
+
+# ─── Distribution / Packaging ────────────────────────────────────────────────
+*.tar.gz
+*.whl
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ─── Alembic ─────────────────────────────────────────────────────────────────
+# Keep migration files, ignore auto-generated stamps
+alembic/versions/__pycache__/
