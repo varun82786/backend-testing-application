@@ -80,6 +80,8 @@ def setup_logging() -> None:
           handlers with ``InterceptHandler``.
     """
     settings = get_settings()
+    log_level = settings.log_level.upper()
+    debug_mode = log_level == "DEBUG"
 
     # 1. Remove existing Loguru handlers.
     logger.remove()
@@ -88,16 +90,16 @@ def setup_logging() -> None:
     if settings.log_format == "json":
         logger.add(
             sys.stderr,
-            level=settings.log_level.upper(),
+            level=log_level,
             serialize=True,
-            backtrace=True,
-            diagnose=not settings.is_production,
+            backtrace=debug_mode,
+            diagnose=debug_mode,
             enqueue=True,  # thread-safe
         )
     else:
         logger.add(
             sys.stderr,
-            level=settings.log_level.upper(),
+            level=log_level,
             format=(
                 "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
                 "<level>{level: <8}</level> | "
@@ -112,8 +114,8 @@ def setup_logging() -> None:
                 )
             ),
             colorize=True,
-            backtrace=True,
-            diagnose=True,
+            backtrace=debug_mode,
+            diagnose=debug_mode,
             enqueue=True,
         )
 

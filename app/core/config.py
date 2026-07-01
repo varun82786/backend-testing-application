@@ -59,7 +59,7 @@ class Settings(BaseSettings):
 
     # Logging
     log_level: str = "INFO"
-    log_format: str = "json"
+    log_format: str = "human"
 
     # Bug Injection Flags
     enable_negative_inventory: bool = False
