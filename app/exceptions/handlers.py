@@ -16,6 +16,7 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from loguru import logger
+from sqlalchemy.exc import IntegrityError
 
 from app.exceptions.base import (
     AuthenticationError,
@@ -160,6 +161,30 @@ def _handle_generic_exception(
     )
 
 
+def _handle_integrity_error(
+    _request: Request,
+    exc: IntegrityError,
+) -> JSONResponse:
+    """Handle SQLAlchemy integrity errors.
+
+    Converts unique constraint violations into a domain ``ConflictError``
+    response so repeated or concurrent duplicate inserts do not expose a
+    raw database exception.
+    """
+    logger.warning(
+        "Database integrity error: {error}",
+        error=str(exc.orig) if exc.orig is not None else str(exc),
+    )
+
+    # A generic 409 Conflict envelope without leaking raw SQL details.
+    return _build_error_response(
+        status_code=409,
+        code="CONFLICT",
+        message="A database conflict occurred. The requested operation may already exist or violate a uniqueness constraint.",
+        details={"error": "integrity_constraint_violation"},
+    )
+
+
 # ------------------------------------------------------------------
 # Registration helper
 # ------------------------------------------------------------------
@@ -172,6 +197,10 @@ def register_exception_handlers(app: FastAPI) -> None:
     Args:
         app: The FastAPI application instance.
     """
+    # Specific database integrity errors are translated into a 409 Conflict
+    # response so concurrent duplicate inserts do not crash the application.
+    app.add_exception_handler(IntegrityError, _handle_integrity_error)  # type: ignore[arg-type]
+
     # Domain exceptions – register the base class; the handler walks
     # the MRO to resolve the correct status code.
     app.add_exception_handler(OMSException, _handle_oms_exception)  # type: ignore[arg-type]
